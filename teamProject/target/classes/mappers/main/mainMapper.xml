@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="main">
+	<select id="listAll"
+		resultType="com.example.teamProject.model.main.dto.MainDTO">
+		<include refid="paging_header" />
+		(
+		select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from btg b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from sud b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from ovw b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from wow b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from loa b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from mps b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from lol b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from dot b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from hos b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from sta b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from mic b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from civ b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from fif b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from nfs b , login l
+      <include refid="search" />
+      union
+      select bno,bord,title,writer,regdate,viewcnt,show,l.nick,t_name,
+      (select
+      count(*) from reply where bno=b.bno) cnt
+      from win b , login l
+      <include refid="search" />
+		
+)
+		order by regdate desc
+		<include refid="paging_footer" />
+	</select>
+	<sql id="paging_header">
+		select *
+		from (
+		select rownum as rn, A.*
+		from (
+	</sql>
+	<sql id="paging_footer">
+		) A
+		)
+	</sql>
+	<sql id="search">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=l.userid
+				and show='Y'
+				and
+				${search_option} like #{keyword}
+			</when>
+			<otherwise>
+				where b.writer=l.userid
+				and show='Y'
+				and (nick like
+				#{keyword}
+				or title like #{keyword}
+				or posts like #{keyword} )
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="read"
+		resultType="com.example.teamProject.model.main.dto.MainDTO">
+		select bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from btg b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from sud b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from ovw b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from wow b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from loa b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from mps b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from lol b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from hos b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from dot b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from sta b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from mic b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from civ b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from fif b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from nfs b, login l
+		where b.writer=l.userid and bno=#{bno}
+		union
+		select
+		bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from win b, login l
+		where b.writer=l.userid and bno=#{bno}
+
+	</select>
+
+
+
+</mapper>

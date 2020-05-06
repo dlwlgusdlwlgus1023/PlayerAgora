@@ -1,0 +1,997 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="screenshot">
+<select id="listAll"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_header" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="search" />
+			order by bno desc   
+		<include refid="paging_footer" />
+	</select>
+	<sql id="paging_header">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footer">
+		    ) A
+		) where rn between #{start} and #{end} 
+	</sql>
+  
+    	<sql id="search">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword}
+			</when>
+			<otherwise>
+				where b.writer=m.userid
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticle" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="search" />
+	</select>
+	
+	
+	
+	
+	
+	<!-- 내가쓴글 -->
+	<select id="listMine"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerMine" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchMine" />
+			order by bno desc   
+		<include refid="paging_footerMine" />
+	</select>
+	<sql id="paging_headerMine">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerMine">
+		    ) A
+		) where rn between #{start} and #{end} and writer = #{writer}
+	</sql>
+  
+    	<sql id="searchMine">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} 		
+			</when>
+			<otherwise>
+				where b.writer=m.userid 
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleMine" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchMine" />
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- 배그 -->
+	
+	<select id="listBtg"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerBtg" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchBtg" />
+			order by bno desc   
+		<include refid="paging_footerBtg" />
+	</select>
+	<sql id="paging_headerBtg">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerBtg">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Btg'
+	</sql>
+  
+    	<sql id="searchBtg">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Btg'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Btg'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleBtg" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchBtg" />
+	</select>
+	
+	
+	<!-- 서든 -->
+	
+	<select id="listSud"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerSud" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchSud" />
+			order by bno desc   
+		<include refid="paging_footerSud" />
+	</select>
+	<sql id="paging_headerSud">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerSud">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Sud'
+	</sql>
+  
+    	<sql id="searchSud">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Sud'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Sud'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleSud" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchSud" />
+	</select>
+	
+	
+		<!-- 옵치 -->
+	
+	<select id="listOve"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerOve" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchOve" />
+			order by bno desc   
+		<include refid="paging_footerOve" />
+	</select>
+	<sql id="paging_headerOve">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerOve">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Ove'
+	</sql>
+  
+    	<sql id="searchOve">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Ove'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Ove'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleOve" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchOve" />
+	</select>
+	
+	
+		<!-- 와우 -->
+	
+	<select id="listWow"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerWow" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchWow" />
+			order by bno desc   
+		<include refid="paging_footerWow" />
+	</select>
+	<sql id="paging_headerWow">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerWow">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Wow'
+	</sql>
+  
+    	<sql id="searchWow">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Wow'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Wow'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleWow" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchWow" />
+	</select>	
+	
+			<!-- 로스트아크 -->
+	
+	<select id="listLoa"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerLoa" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchLoa" />
+			order by bno desc   
+		<include refid="paging_footerLoa" />
+	</select>
+	<sql id="paging_headerLoa">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerLoa">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Loa'
+	</sql>
+  
+    	<sql id="searchLoa">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Loa'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Loa'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleLoa" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchLoa" />
+	</select>	
+	
+				<!--메이플스토리 -->
+	
+	<select id="listMps"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerMps" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchMps" />
+			order by bno desc   
+		<include refid="paging_footerMps" />
+	</select>
+	<sql id="paging_headerMps">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerMps">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Mps'
+	</sql>
+  
+    	<sql id="searchMps">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Mps'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Mps'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleMps" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchMps" />
+	</select>	
+	
+	
+					<!-- 리그오브레전드-->
+	
+	<select id="listLol"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerLol" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchLol" />
+			order by bno desc   
+		<include refid="paging_footerLol" />
+	</select>
+	<sql id="paging_headerLol">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerLol">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Lol'
+	</sql>
+  
+    	<sql id="searchLol">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Lol'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Lol'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleLol" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchLol" />
+	</select>	
+	
+						<!-- 도타2 -->
+	
+	<select id="listDot"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerDot" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchDot" />
+			order by bno desc   
+		<include refid="paging_footerDot" />
+	</select>
+	<sql id="paging_headerDot">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerDot">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Dot'
+	</sql>
+  
+    	<sql id="searchDot">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Dot'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Dot'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleDot" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchDot" />
+	</select>	
+	
+							<!-- 히오스 -->
+	
+	<select id="listHos"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerHos" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchHos" />
+			order by bno desc   
+		<include refid="paging_footerHos" />
+	</select>
+	<sql id="paging_headerHos">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerHos">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Hos'
+	</sql>
+  
+    	<sql id="searchHos">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Hos'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Hos'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleHos" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchHos" />
+	</select>	
+	
+	
+								<!-- 스타 -->
+	
+	<select id="listSta"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerSta" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchSta" />
+			order by bno desc   
+		<include refid="paging_footerSta" />
+	</select>
+	<sql id="paging_headerSta">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerSta">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Sta'
+	</sql>
+  
+    	<sql id="searchSta">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Sta'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Sta'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleSta" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchSta" />
+	</select>	
+	
+	
+									<!-- 마크 -->
+	
+	<select id="listMic"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerMic" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchMic" />
+			order by bno desc   
+		<include refid="paging_footerMic" />
+	</select>
+	<sql id="paging_headerMic">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerMic">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Mic'
+	</sql>
+  
+    	<sql id="searchMic">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Mic'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Mic'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleMic" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchMic" />
+	</select>	
+	
+	
+										<!-- 문명 -->
+	
+	<select id="listCiv"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerCiv" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchCiv" />
+			order by bno desc   
+		<include refid="paging_footerCiv" />
+	</select>
+	<sql id="paging_headerCiv">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerCiv">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Civ'
+	</sql>
+  
+    	<sql id="searchCiv">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Civ'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Civ'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleCiv" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchCiv" />
+	</select>	
+	
+	
+											<!-- 피파 -->
+	
+	<select id="listFif"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerFif" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchFif" />
+			order by bno desc   
+		<include refid="paging_footerFif" />
+	</select>
+	<sql id="paging_headerFif">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerFif">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Fif'
+	</sql>
+  
+    	<sql id="searchFif">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Fif'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Fif'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleFif" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchFif" />
+	</select>	
+	
+	
+												<!--니드포 -->
+	
+	<select id="listNfs"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerNfs" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchNfs" />
+			order by bno desc   
+		<include refid="paging_footerNfs" />
+	</select>
+	<sql id="paging_headerNfs">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerNfs">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Nfs'
+	</sql>
+  
+    	<sql id="searchNfs">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Nfs'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Nfs'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleNfs" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchNfs" />
+	</select>	
+	
+	
+													<!--위닝 -->
+	
+	<select id="listWin"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+		<include refid="paging_headerWin" />
+			select bno,title,writer,name,viewcnt,show,m.nick,game,abb,
+			(select count(*) from reply where bno=b.bno) cnt,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),1,12) uploaddate,
+			SUBSTR((select fullname from upload where bno=b.bno and rownum=1),15) fullname
+			from screenshot b , login m
+			
+			<include refid="searchWin" />
+			order by bno desc   
+		<include refid="paging_footerWin" />
+	</select>
+	<sql id="paging_headerWin">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerWin">
+		    ) A
+		) where rn between #{start} and #{end} and abb='Win'
+	</sql>
+  
+    	<sql id="searchWin">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=m.userid 
+				    and show='Y'
+				    and ${search_option} like #{keyword} and abb='Win'			
+			</when>
+			<otherwise>
+				where b.writer=m.userid and abb='Win'
+				    and show='Y'
+				    and (nick like #{keyword} 
+				        or title like #{keyword}
+				        or posts like #{keyword} )			
+			</otherwise>
+		</choose>
+	</sql>
+		
+   <select id="countArticleWin" resultType="int">
+		select count(*)
+		from screenshot b,login m	
+		<include refid="searchWin" />
+	</select>	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  <insert id="insert">
+    insert into screenshot (bno,title,posts,writer,game,abb) values
+		( seq_screenshot.nextval, #{title}, #{posts}, #{writer} ,#{game},#{abb}  )
+  </insert>
+  
+  <!-- 첨부파일 정보 저장 -->
+  <insert id="addUpload">
+    insert into upload (fullName, bno) values
+		( #{fullName}, seq_screenshot.currval ) 
+  </insert>
+  
+  <!-- 레코드 갯수 계산 -->
+
+
+  <!-- 검색기능, sql태그는 다른 태그에 끼워넣을 수 있는 기능을 가지고 있음 -->
+
+
+  
+  <!-- 조회수 증가 처리 -->
+  <update id="increateViewcnt">
+    update screenshot set viewcnt=viewcnt+1
+		where bno=#{bno}
+  </update>
+  
+  <select id="read" 
+  resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+    select bno,title,regdate,posts,viewcnt,name,writer, nick,game
+		from screenshot b, login m
+		where b.writer=m.userid and bno=#{bno}
+  </select>
+  
+  <!-- 첨부파일 목록 -->
+	<select id="getUpload" resultType="String">
+	  select fullName 
+		from upload
+		where bno=#{bno}
+		order by regdate desc	
+	</select>
+	
+	<!-- 첨부파일 레코드 삭제 -->
+	<delete id="deleteFile">
+	  delete from upload
+		where fullName=#{fullName}
+	</delete>
+	
+	<!-- 게시물 내용 수정 -->
+	<update id="update">
+	  update screenshot
+		set title=#{title}, posts=#{posts}
+		where bno=#{bno}
+	</update>
+	
+	<!-- 새로운 첨부파일 추가 -->
+	<insert id="updateupload">
+	  insert into upload (fullName, bno) values
+		( #{fullName}, #{bno} )
+	</insert>
+	
+	<!-- 게시물 삭제 -->
+	<delete id="delete">
+	  update screenshot set show='N' where bno=#{bno}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="postsList"
+resultType="com.example.teamProject.model.screenshot.dto.ScreenshotDTO">
+SELECT bno,game,abb,title,writer,viewcnt,regdate FROM  screenshot WHERE show='Y' and writer=#{writer}
+
+UNION 
+
+SELECT bno,b_name,title,writer,viewcnt,regdate FROM btg WHERE show='Y' and writer=#{writer}
+	</select>
+	<sql id="paging_headerPo">
+		select *
+		from (
+		    select rownum as rn, A.*
+		    from (	
+	</sql>
+	<sql id="paging_footerPo">
+		    ) A
+		) where rn between #{start} and #{end} 
+	</sql>
+		
+   <select id="countArticlePo" resultType="int">
+		select count(*)
+		from screenshot b,login
+	</select>
+	
+	
+	
+	
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

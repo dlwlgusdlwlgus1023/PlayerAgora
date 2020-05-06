@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="login">
+	
+	 <select id="login_check" 
+  parameterType="com.example.teamProject.model.member.dto.MemberDTO"
+  resultType="String">
+    select name from login
+    where userid=#{userid} and pwd=#{pwd}
+  </select>
+    <select id="viewMember" 
+  resultType="com.example.teamProject.model.member.dto.MemberDTO">
+    select * from login
+    where userid=#{userid}
+  </select>
+  <insert id="insertMember">
+  	insert into login (userid,pwd,name,addr1,addr2,addr3,phone,email,birth, nick,sex)
+	values (#{userid}, #{pwd}, #{name}, #{addr1}, #{addr2}, #{addr3}, #{phone}
+	 , #{email},#{birth}, #{nick}, #{sex})
+  </insert>
+   <update id="updateMember">
+		update login
+		set pwd=#{pwd}, name=#{name}, email=#{email}, nick=#{nick}, 
+		addr1=#{addr1}, addr2=#{addr2}, addr3=#{addr3} 
+		 where userid=#{userid}        
+	</update>	
+	<select id="checkPw" resultType="int">
+		select count(*) from login
+		where userid=#{userid} and pwd=#{pwd}
+	</select>
+	<delete id="deleteMember">
+		delete from login
+		where userid=#{userid}
+	</delete>
+  
+	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="loa">
+	<select id="listAll"
+		resultType="com.example.teamProject.model.loa.dto.LoaDTO">
+		<include refid="paging_header" />
+		select bno,b_name,title,writer,regdate,viewcnt,show,l.nick,
+		(select count(*) from reply where bno=b.bno) cnt
+		from loa b , login l
+
+		<include refid="search" />
+		order by bno desc
+		<include refid="paging_footer" />
+	</select>
+	<sql id="paging_header">
+		select *
+		from (
+		select rownum as rn, A.*
+		from (
+	</sql>
+	<sql id="paging_footer">
+		) A
+		) where rn between #{start} and #{end}
+	</sql>
+
+	<sql id="search">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=l.userid
+				and show='Y'
+				and ${search_option} like #{keyword}
+			</when>
+			<otherwise>
+				where b.writer=l.userid
+				and show='Y'
+				and (nick like #{keyword}
+				or title like #{keyword}
+				or posts like #{keyword} )
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="countArticle" resultType="int">
+		select count(*)
+		from loa b,login l
+		<include refid="search" />
+	</select>
+
+	<insert id="insert">
+		insert into loa (bno,b_name,title,posts,writer)
+		values
+		( seq_loa.nextval,
+		#{b_name} ,#{title}, #{posts}, #{writer} )
+	</insert>
+
+	<!-- 첨부파일 정보 저장 -->
+	<insert id="addAttach">
+		insert into attach (fullName, bno) values
+		(
+		#{fullName}, seq_loa.currval )
+	</insert>
+
+	<!-- 조회수 증가 처리 -->
+	<update id="increateViewcnt">
+		update loa set viewcnt=viewcnt+1
+		where bno=#{bno}
+	</update>
+
+	<select id="read"
+		resultType="com.example.teamProject.model.loa.dto.LoaDTO">
+		select bno,title,regdate,posts,viewcnt,writer,nick,b_name
+		from loa b,
+		login l
+		where b.writer=l.userid and bno=#{bno}
+	</select>
+
+	<!-- 첨부파일 목록 -->
+	<select id="getAttach" resultType="String">
+		select fullName
+		from attach
+		where bno=#{bno}
+		order by regdate desc
+	</select>
+
+	<!-- 첨부파일 레코드 삭제 -->
+	<delete id="deleteFile">
+		delete from attach
+		where fullName=#{fullName}
+	</delete>
+
+	<!-- 게시물 내용 수정 -->
+	<update id="update">
+		update loa
+		set title=#{title}, posts=#{posts}
+		where
+		bno=#{bno}
+	</update>
+
+	<!-- 새로운 첨부파일 추가 -->
+	<insert id="updateAttach">
+		insert into attach (fullName, bno) values
+		(
+		#{fullName}, #{bno} )
+	</insert>
+
+	<!-- 게시물 삭제 -->
+	<update id="delete">
+		update loa set show='N' where bno=#{bno}
+	</update>
+	<!-- Path -->
+	<select id="listPath"
+		resultType="com.example.teamProject.model.loa.dto.LoaDTO">
+		<include refid="paging_header2" />
+		select bno,b_name,title,writer,regdate,viewcnt,show,l.nick,
+		(select count(*) from reply where bno=b.bno) cnt
+		from loa b , login l
+
+		<include refid="search2" />
+		order by bno desc
+		<include refid="paging_footer2" />
+	</select>
+	<sql id="paging_header2">
+		select *
+		from (
+		select rownum as rn, A.*
+		from (
+	</sql>
+	<sql id="paging_footer2">
+		) A
+		) where rn between #{start} and #{end} and b_name='패치노트'
+	</sql>
+
+	<sql id="search2">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=l.userid
+				and show='Y'
+				and ${search_option} like #{keyword} and b_name='패치노트'
+			</when>
+			<otherwise>
+				where b.writer=l.userid and b_name='패치노트'
+				and show='Y'
+				and (nick like #{keyword}
+				or title like #{keyword}
+				or posts like #{keyword} )
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="countArticle2" resultType="int">
+		select count(*)
+		from loa b,login l
+		<include refid="search2" />
+	</select>
+	<!-- Tip -->
+	<select id="listTip"
+resultType="com.example.teamProject.model.loa.dto.LoaDTO">
+      <include refid="paging_header3" />
+		select bno,b_name,title,writer,regdate,viewcnt,show,l.nick,
+         (select count(*) from reply where bno=b.bno) cnt
+         from loa b , login l
+         
+         <include refid="search3" />
+         order by bno desc   
+      <include refid="paging_footer3" />
+   </select>
+   <sql id="paging_header3">
+      select *
+      from (
+          select rownum as rn, A.*
+          from (   
+   </sql>
+   <sql id="paging_footer3">
+          ) A
+      ) where rn between #{start} and #{end} and b_name='공략/팁'
+   </sql>
+  
+       <sql id="search3">
+      <choose>
+         <when test="search_option != 'all' ">
+            where b.writer=l.userid 
+                and show='Y'
+                and ${search_option} like #{keyword} and b_name='공략/팁'         
+         </when>
+         <otherwise>
+            where b.writer=l.userid and b_name='공략/팁'
+                and show='Y'
+                and (nick like #{keyword} 
+                    or title like #{keyword}
+                    or posts like #{keyword} )         
+         </otherwise>
+      </choose>
+   </sql>
+   <select id="countArticle3" resultType="int">
+		select count(*)
+		from loa b,login l
+		<include refid="search3" />
+	</select>
+	<!-- Party -->
+	<select id="listParty"
+		resultType="com.example.teamProject.model.loa.dto.LoaDTO">
+		<include refid="paging_header4" />
+		select bno,b_name,title,writer,regdate,viewcnt,show,l.nick,
+		(select count(*) from reply where bno=b.bno) cnt
+		from loa b , login l
+
+		<include refid="search4" />
+		order by bno desc
+		<include refid="paging_footer4" />
+	</select>
+	<sql id="paging_header4">
+		select *
+		from (
+		select rownum as rn, A.*
+		from (
+	</sql>
+	<sql id="paging_footer4">
+		) A
+		) where rn between #{start} and #{end} and b_name='파티모집'
+	</sql>
+
+	<sql id="search4">
+		<choose>
+			<when test="search_option != 'all' ">
+				where b.writer=l.userid
+				and show='Y'
+				and ${search_option} like #{keyword} and b_name='파티모집'
+			</when>
+			<otherwise>
+				where b.writer=l.userid and b_name='파티모집'
+				and show='Y'
+				and (nick like #{keyword}
+				or title like #{keyword}
+				or posts like #{keyword} )
+			</otherwise>
+		</choose>
+	</sql>
+
+	<select id="countArticle4" resultType="int">
+		select count(*)
+		from loa b,login l
+		<include refid="search4" />
+	</select>
+</mapper>
